@@ -22,8 +22,8 @@ async function processLineByLine() {
                     let id = res.body["data"]["items"][0]["id"]
                     let name = res.body["data"]["items"][0]["title"]
                     let artist = res.body["data"]["items"][0]["artist"].name
-                    console.log(`${id} ${name} - ${artist}`);
-                    fs.appendFile('./ids.txt', `${id} ${name} - ${artist}` + "\n", (err) => {
+                    console.log(`${id} ${artist} - ${name}`);
+                    fs.appendFile('./ids.txt', `${id} ${artist} - ${name}` + "\n", (err) => {
                         if (err) throw err;
                     });
                 }
