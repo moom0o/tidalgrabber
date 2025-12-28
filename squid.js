@@ -17,21 +17,24 @@ async function processLineByLine() {
 }
 
 
-async function request(search) {
-    const res = await unirest('GET', `https://wolf.qqdl.site/track/?id=${encodeURIComponent(search)}&quality=LOSSLESS`)
-
-    if (res.error || !res.body[2] || !res.body[2]["OriginalTrackUrl"]) {
+async function request(string) {
+    let args = string.split(' ')
+    let name = args.slice(1).join(" ")
+    let search = args[0]
+    const res = await unirest('GET', `https://tidal.kinoplus.online/track/?id=${encodeURIComponent(search)}&quality=LOSSLESS`)
+    let url = JSON.parse(Buffer.from(res.body["data"]["manifest"], 'base64').toString('utf-8')).urls[0];
+    if (res.error || !url) {
         console.log(res.raw_body);
         if(res.body["detail"] && res.body["detail"] === "Too Many Requests") {
-            await request(search)
+            await request(args)
         } else {
-            fs.appendFile('./squiderrors.txt', search + "\n", (err) => {
+            fs.appendFile('./squiderrors.txt', args + "\n", (err) => {
                 if (err) throw err;
             });
         }
     } else {
-        console.log(`${res.body[2]["OriginalTrackUrl"]} ${res.body[0]["artist"]["name"]} - ${res.body[0]["title"]}`);
-        fs.appendFile('./urls.txt', `${res.body[2]["OriginalTrackUrl"]} ${res.body[0]["artist"]["name"]} - ${res.body[0]["title"]}` + "\n", (err) => {
+        console.log(`${url} ${name}`);
+        fs.appendFile('./urls.txt', `${url} ${name}` + "\n", (err) => {
             if (err) throw err;
         });
     }

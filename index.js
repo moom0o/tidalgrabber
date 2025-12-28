@@ -11,17 +11,19 @@ async function processLineByLine() {
     });
 
     for await (const search of rl) {
-        console.log(search);
-        const res = await unirest('GET', `https://kraken.squid.wtf/search/?s=${encodeURIComponent(search)}`)
+        const res = await unirest('GET', `https://triton.squid.wtf/search/?s=${encodeURIComponent(search)}`)
 
-                if (res.error || res.body["items"].length === 0 || res.body["items"][0]["id"] === false) {
+                if (res.error || res.body["data"]["items"].length === 0 || res.body["data"]["items"][0]["id"] === false) {
                     fs.appendFile('./searcherrors.txt', search + "\n", (err) => {
                         if (err) throw err;
                     });
                     console.log(res.error);
                 } else {
-                    console.log(res.body["items"][0]["id"]);
-                    fs.appendFile('./ids.txt', res.body["items"][0]["id"] + "\n", (err) => {
+                    let id = res.body["data"]["items"][0]["id"]
+                    let name = res.body["data"]["items"][0]["title"]
+                    let artist = res.body["data"]["items"][0]["artist"].name
+                    console.log(`${id} ${name} - ${artist}`);
+                    fs.appendFile('./ids.txt', `${id} ${name} - ${artist}` + "\n", (err) => {
                         if (err) throw err;
                     });
                 }
