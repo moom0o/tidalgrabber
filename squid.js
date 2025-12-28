@@ -28,7 +28,7 @@ async function request(string) {
         if(res.body["detail"] && res.body["detail"] === "Too Many Requests") {
             await request(args)
         } else {
-            fs.appendFile('./squiderrors.txt', args + "\n", (err) => {
+            fs.appendFile('./squiderrors.txt', string + "\n", (err) => {
                 if (err) throw err;
             });
         }
